@@ -16,7 +16,7 @@ public class PlayerInfo : MonoBehaviour
     public static PlayerInfo instance;
 
     [SerializeField] Player[] playerList = null;
-    [SerializeField] string playerName = null;
+    public string playerName { get; private set; }
     [SerializeField] RawImage playerImg = null;
 
     AudioSource audioSource;
