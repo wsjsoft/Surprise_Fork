@@ -361,7 +361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8560856807067853230, guid: be1cf474108aa9a419510192fede55de, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8560856807067853230, guid: be1cf474108aa9a419510192fede55de, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1304,7 +1304,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 2280, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2839,7 +2839,6 @@ MonoBehaviour:
     render: {fileID: 8400000, guid: 37eb5c4806c938147a389ce5303abd4b, type: 2}
   - name: "\uACE0\uAD6C\uB9C8"
     render: {fileID: 8400000, guid: aa52313a788a43943af9c4fbb6b9b301, type: 2}
-  playerName: 
   playerImg: {fileID: 20126734}
   clickClip: {fileID: 8300000, guid: 740beea639c227447aeefe7e32ae25eb, type: 3}
   playerNum: 0

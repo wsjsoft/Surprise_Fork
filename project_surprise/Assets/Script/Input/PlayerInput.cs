@@ -49,8 +49,8 @@ public class PlayerInput : MonoBehaviourPun //IPunObservable
     }
     void Keyboard()
     {
-        move = -1*Input.GetAxisRaw("Horizontal");
-        rotate = -1*Input.GetAxisRaw("Vertical");
+        move = Input.GetAxisRaw("Horizontal");
+        rotate = Input.GetAxisRaw("Vertical");
     }
 
     //[PunRPC]

@@ -40,7 +40,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         audioSource.PlayOneShot(clickClip);
 
         if (string.IsNullOrEmpty(nicknameInput.text)) // 이름의 인풋필드가 비어있다면
-            nicknameInput.text = $"이름_{Random.Range(1, 100):000}"; // 랜덤으로 이름 부여
+            nicknameInput.text = PlayerInfo.instance.playerName + $"_{Random.Range(1, 100):000}"; // 랜덤으로 이름 부여
         else
             PhotonNetwork.LocalPlayer.NickName = nicknameInput.text;
 
