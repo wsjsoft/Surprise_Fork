@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Cinemachine;
 
 public class CameraJoystick : MonoBehaviour, IDragHandler, IEndDragHandler
 {
@@ -11,9 +12,13 @@ public class CameraJoystick : MonoBehaviour, IDragHandler, IEndDragHandler
 
     [HideInInspector]
     public Vector3 Dir { get; private set; }
+
+    CinemachineFreeLook camFreeLook;
+
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
+        camFreeLook = FindObjectOfType<CinemachineFreeLook>();
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -28,5 +33,16 @@ public class CameraJoystick : MonoBehaviour, IDragHandler, IEndDragHandler
     {
         lever.localPosition = Vector3.zero;
         Dir = Vector3.zero;
+    }
+
+    void MoveCamera()
+    {
+        camFreeLook.m_XAxis.m_InputAxisValue = Dir.x;
+        camFreeLook.m_YAxis.m_InputAxisValue = Dir.z;
+    }
+
+    void FixedUpdate()
+    {
+        MoveCamera();
     }
 }
