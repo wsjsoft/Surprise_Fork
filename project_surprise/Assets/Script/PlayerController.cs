@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         if(photonView.IsMine)
         {
             controller = GetComponent<CharacterController>();
+            animator = GetComponent<Animator>();
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
             cam = FindObjectOfType<CinemachineFreeLook>().transform;
         }
@@ -94,10 +95,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                isMove = true;
             }
             else
             {
                 moveDirection = Vector3.zero;
+                isMove = false;
             }
 
             controller.SimpleMove(moveDirection.normalized * speed);
