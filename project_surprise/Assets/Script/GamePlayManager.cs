@@ -25,8 +25,8 @@ public class GamePlayManager : MonoBehaviourPunCallbacks
     void CreatePlayer()
     {
         if (PlayerInfo.instance.GetCurrentPlayer().name == "°¨ÀÚ")
-            PhotonNetwork.Instantiate("Potato", startPos[Random.Range(0, startPos.Length)].position, Quaternion.Euler(new Vector3(0, 180, 0)));
+            PhotonNetwork.Instantiate("Potato", startPos[Random.Range(0, startPos.Length)].position, Quaternion.Euler(new Vector3(0, 0, 0)));
         else
-            PhotonNetwork.Instantiate("SweetPotato", startPos[Random.Range(0, startPos.Length)].position, Quaternion.Euler(new Vector3(0, 180, 0)));
+            PhotonNetwork.Instantiate("SweetPotato", startPos[Random.Range(0, startPos.Length)].position, Quaternion.Euler(new Vector3(0, 0, 0)));
     }
 }
