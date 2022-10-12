@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Vector3 joystickDirection;
     Vector3 moveDirection;
 
-    public float speed = 6f;
+    public float speed = 2f;
 
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
@@ -82,17 +82,14 @@ public class PlayerController : MonoBehaviourPunCallbacks
         else isMove = false;*/
 
         //변경 후
-        
-        /*if(virtualJoystick != null)
-        {*/
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
 
-            Vector3 direction = new Vector3(horizontal, 0, vertical).normalized;
+        if (virtualJoystick != null)
+        {
+            joystickDirection = virtualJoystick.Dir;
 
-            if (direction.magnitude >= 0.1f)
+            if (joystickDirection.magnitude >= 0.1f)
             {
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+                float targetAngle = Mathf.Atan2(joystickDirection.x, joystickDirection.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
                 //cam 회전값이 기본인 상태(cam.eulerAngles.y)에서 플레이어 회전 인풋값(Mathf.Atan2(direction.x, direction.z))을 넣는다
                 //AcrTan(x/y)를 의미 -> 유니티 좌표계는 y축 +방향이 0도로 시계방향 좌표계를 쓰기 때문에 y/x가 아닌 x/y
                 //Atan는 절대각을 -π/2 ~ π/2의 라디안 값으로 반환
@@ -102,18 +99,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 //현재각과 목표 회전값까지 사이의 자연스러운 회전을 위한 각도를 계속해서 계산
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-                Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
 
-                controller.SimpleMove(moveDir.normalized * speed); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
+                controller.SimpleMove(moveDirection.normalized * speed); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
             }
             else
             {
-                Vector3 moveDir = Vector3.zero;
-                //moveDir.y -= 6f * Time.deltaTime;
-
-                controller.SimpleMove(moveDir.normalized * speed); //move
+                moveDirection = Vector3.zero;
             }
-        
+
+            controller.SimpleMove(moveDirection.normalized * speed); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
+        }
     }
 }
