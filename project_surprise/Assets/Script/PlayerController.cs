@@ -16,6 +16,15 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     float moveSpeed = 1f;
 
+    //변경 변수
+    public CharacterController controller;
+    public Transform cam;
+
+    public float speed = 6f;
+
+    public float turnSmoothTime = 0.1f;
+    public float turnSmoothVelocity;
+
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
 
