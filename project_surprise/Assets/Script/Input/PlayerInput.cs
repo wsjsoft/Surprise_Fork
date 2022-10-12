@@ -5,7 +5,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 // MonoBehaviourPun : photonView 프로퍼티를 통해 게임 오브젝트의 Photon View 컴포넌트에 접근을 위해 사용
-public class PlayerInput : MonoBehaviourPun, IPunObservable
+public class PlayerInput : MonoBehaviourPun //IPunObservable
 { 
     public float move { get; private set; }
     public float rotate { get; private set; }
