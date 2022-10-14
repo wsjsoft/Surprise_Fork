@@ -41,6 +41,8 @@ MonoBehaviour:
   - RespawnSpaceship
   - GetPlayerName
   - GameReady
+  - PushReadyButton
+  - ReadyButton
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1
