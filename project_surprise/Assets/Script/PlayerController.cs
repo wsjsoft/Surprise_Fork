@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
             cam = Camera.main;
 
-            atkCooltimePanel = GameObject.Find("CoolTime_Panel");
+            atkCooltimePanel = GameObject.Find("AtkCoolTime_Panel");
             atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() =>
                 Attack()
             );

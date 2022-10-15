@@ -14,6 +14,9 @@ public class ButtonManager : MonoBehaviourPunCallbacks//,IPunObservable
     int readyButton = 0;
     int readyCnt = 0;
 
+    [Header("Run")]
+    [SerializeField] Button runButton;
+
     Hashtable temp = new Hashtable();
     void Start()
     {
