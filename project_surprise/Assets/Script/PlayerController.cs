@@ -25,7 +25,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Vector3 joystickDirection;
     Vector3 moveDirection;
 
-    public float speed = 6f;
+    public float speed;
+    public float speed_walk = 6f;
+    public float speed_run = 20f;
 
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
@@ -49,6 +51,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         //변경후
         if(photonView.IsMine)
         {
+            playerInput = GetComponent<PlayerInput>();
             controller = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
@@ -113,6 +116,8 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
+
+                speed = playerInput.run ? speed_run : speed_walk;
 
                 controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
             }
