@@ -37,6 +37,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
     GameObject atkCooltimePanel;
     float atkCooltime = 3f;
 
+    //Run
+    GameObject runCooltimePanel;
+    float runTime = 0;
+    float runMaxTime = 4f;
+    float runCooltime = 3f;
+
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
 
@@ -57,10 +63,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
             cam = Camera.main;
 
+            //공격
             atkCooltimePanel = GameObject.Find("AtkCoolTime_Panel");
             atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() =>
                 Attack()
             );
+            //run
+            runCooltimePanel = GameObject.Find("RunCoolTime_Panel");
         }
 
     }
@@ -68,7 +77,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-
+        Debug.Log(runTime);
         Move();
         animator.SetBool("Walk", isMove);
     }
@@ -117,7 +126,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
 
-                speed = playerInput.run ? speed_run : speed_walk;
+                Run();
 
                 controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
             }
@@ -137,5 +146,32 @@ public class PlayerController : MonoBehaviourPunCallbacks
         animator.SetTrigger("Attack");
         atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
         atkCooltimePanel.SetActive(true);
+    }
+
+    void Run()
+    {
+        if(playerInput.run)
+        {
+            if(1 < runTime / runMaxTime)
+            {
+                playerInput.run = false;
+                runTime = runMaxTime;
+                runCooltimePanel.GetComponent<CoolTime>().SetCoolTime(runCooltime);
+                runCooltimePanel.SetActive(true);
+            }
+            runTime += Time.deltaTime;
+        }
+        else if(!playerInput.run && runTime > 0)
+        {
+            if(runTime < 0)
+            {
+                runTime = 0f;
+            }
+            else
+            {
+                runTime -= Time.deltaTime;
+            }
+        }
+        speed = playerInput.run ? speed_run : speed_walk;
     }
 }

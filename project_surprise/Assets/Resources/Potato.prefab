@@ -530,6 +530,8 @@ MonoBehaviour:
   pv: {fileID: 1247018744293358576}
   playerName: {fileID: 4739501695846647366}
   speed: 6
+  speed_walk: 6
+  speed_run: 20
   turnSmoothTime: 0.1
   turnSmoothVelocity: 5
 --- !u!114 &-3032220243803227036
