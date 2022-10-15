@@ -26,18 +26,6 @@ public class ButtonManager : MonoBehaviourPunCallbacks//,IPunObservable
 
     }
 
-    private void Update()
-    {
-        if(playerInput.run)
-        {
-            Debug.Log("On Run");
-        }
-        else
-        {
-            Debug.Log("Off Run");
-        }
-    }
-
     public void RunButtonDown()
     {
         playerInput.run = true; // PlayerInput의 Update에서 매번 검사하지않아도되서 여기서 넣는게 나은거같기도,,

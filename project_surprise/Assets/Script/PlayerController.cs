@@ -30,6 +30,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
     //
+
+    //공격
+    GameObject atkCooltimePanel;
+    float atkCooltime = 3f;
+
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
 
@@ -48,6 +53,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
             animator = GetComponent<Animator>();
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
             cam = Camera.main;
+
+            atkCooltimePanel = GameObject.Find("CoolTime_Panel");
+            atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() =>
+                Attack()
+            );
         }
 
     }
@@ -115,5 +125,12 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
         }
+    }
+
+    public void Attack()
+    {
+        animator.SetTrigger("Attack");
+        atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
+        atkCooltimePanel.SetActive(true);
     }
 }
