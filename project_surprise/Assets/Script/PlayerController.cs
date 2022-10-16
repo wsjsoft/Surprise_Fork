@@ -13,9 +13,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public TextMesh playerName;
     Animator animator;
-    Rigidbody rb;
-
-    float moveSpeed = 1f;
 
     //변경 변수
     CharacterController controller = null;
@@ -25,7 +22,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Vector3 joystickDirection;
     Vector3 moveDirection;
 
-    public float speed = 6f;
+    public float speed = 12f;
 
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
