@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class GamePlayManager : MonoBehaviourPunCallbacks
 {
-    public Text playerNameText;
     public Transform[] startPos;
     //public Camera mainCam;
 
@@ -17,11 +16,7 @@ public class GamePlayManager : MonoBehaviourPunCallbacks
 
         CreatePlayer();
     }
-    void Update()
-    {
-        playerNameText.text = PhotonNetwork.LocalPlayer.NickName;
-    }
-    
+
     void CreatePlayer()
     {
         if (PlayerInfo.instance.GetCurrentPlayer().name == "°¨ÀÚ")
