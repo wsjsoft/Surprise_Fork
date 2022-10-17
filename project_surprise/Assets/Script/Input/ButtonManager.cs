@@ -17,13 +17,19 @@ public class ButtonManager : MonoBehaviourPunCallbacks//,IPunObservable
     [Header("Run")]
     [SerializeField] Button runButton;
 
+    [Header("PlayerList")]
+    [SerializeField] Transform scrollContent;
+    [SerializeField] GameObject playerList;
+
     Hashtable temp = new Hashtable();
     void Start()
     {
+        Debug.Log("씬 전환");
         playerInput = FindObjectOfType<PlayerInput>();
         temp.Add("준비완료", 0);
-
-
+        Debug.Log("닉네임" + PhotonNetwork.LocalPlayer.NickName);
+        
+        PlayerState();
         //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "준비", num } }); 
         //ht = PhotonNetwork.LocalPlayer.CustomProperties;
 
@@ -81,25 +87,57 @@ public class ButtonManager : MonoBehaviourPunCallbacks//,IPunObservable
         Debug.Log("readyCnt : " + readyCnt);
     }
 
-    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) // 프로퍼티 변경되면 자동으로 호출됨.
+    //[PunRPC]
+    void PlayerState()
     {
-        if(targetPlayer == PhotonNetwork.LocalPlayer)
+        Transform[] childList = scrollContent.GetComponentsInChildren<Transform>();
+        Debug.Log("자식오브젝트 " + childList.Length);
+        if(childList != null)
         {
-            if(changedProps != null)
+            for (int i = 1; i < childList.Length; i++)
             {
-                ReadyStatusRenew();
+                if(childList[i] != scrollContent)
+                {
+                    Destroy(childList[i].gameObject);
+                    Debug.Log("list 삭제");
+                }
             }
         }
 
+        for(int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        {
+            GameObject list = Instantiate(playerList, scrollContent);
+            Debug.Log("list 생성");
+            Text playerName = list.transform.GetChild(0).GetComponent<Text>();
+            Text ready = list.transform.GetChild(1).GetComponent<Text>();
+
+            playerName.text = (string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"];
+            Debug.Log((string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"]);
+            
+            bool isReady = 1 == (int)PhotonNetwork.PlayerList[i].CustomProperties["준비완료"];
+            ready.text = isReady ? "Ready" : "not Ready";
+        }
+    }
+
+    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) // 프로퍼티 변경되면 자동으로 호출됨.
+    {
+        Debug.Log("플레이어 상태 업데이트");
+        PlayerState();
+        ReadyStatusRenew();
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
-           ReadyStatusRenew();
+        Debug.Log("플레이어 입장");
+        PlayerState();
+        ReadyStatusRenew();
+
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
-           ReadyStatusRenew();
+        Debug.Log("플레이어 퇴장");
+        PlayerState();
+        ReadyStatusRenew();
     }
 }

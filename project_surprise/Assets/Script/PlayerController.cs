@@ -77,7 +77,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-        Debug.Log(runTime);
         Move();
         animator.SetBool("Walk", isMove);
     }
