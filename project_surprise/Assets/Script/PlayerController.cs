@@ -88,16 +88,13 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
-
-                controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
-            }
+            } 
             else
             {
                 isMove = false;//애니메이션을 위한 bool값
 
                 moveDirection = Vector3.zero;
             }
-
             controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
         }
     }

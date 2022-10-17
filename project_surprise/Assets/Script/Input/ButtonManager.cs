@@ -18,6 +18,7 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     int readyButton = 0;
     int readyCnt = 0;
     bool isReady = false;
+    public Text[] playerNameTemp;
 
     Dictionary<string, Text> playerDic = new Dictionary<string, Text>();
 
@@ -82,6 +83,7 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     }
     void ReadyStatusRenew()
     {
+        Debug.Log((string)PhotonNetwork.LocalPlayer.CustomProperties["닉네임"]);
         readyCnt = 0;
         Debug.Log("PlayerLength : " + PhotonNetwork.PlayerList.Length);
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
@@ -109,67 +111,80 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     }
 
     //[PunRPC]
-    void PlayerStatus(Photon.Realtime.Player p)
+    void PlayerStatus()
     {
+        //Photon.Realtime.Player p
         Debug.Log("플레이어 리스트 생성");
-        int tmp = (int)p.CustomProperties["준비완료"];
-        string readyStatus = new string("");
-        readyStatus = tmp == 1 ? "준비완료" : "아직 준비 중..";
+        //int tmp = (int)p.CustomProperties["준비완료"];
+        //string readyStatus = new string("");
+        //readyStatus = tmp == 1 ? "준비완료" : "아직 준비 중..";
 
         List<string> playerNameList = new List<string>();
+        List<int> playerStatusList = new List<int>();
+        Debug.Log("플레이어 리스트 생성2");
+        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        {
+            //playerNameList.Add((string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"]);
+            playerNameList[i] = (string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"];
+            Debug.Log(playerNameList[i]);
+            playerStatusList[i] = (int)PhotonNetwork.PlayerList[i].CustomProperties["준비완료"];
+        }
 
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
-            playerNameList.Add((string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"]);
+            //playerNameTemp[i].text = playerNameList[i];
+            string readyStatus = playerStatusList[i] == 1 ? "준비완료" : "아직 준비 중..";
 
+            if (PhotonNetwork.LocalPlayer.IsMasterClient) playerNameTemp[i].text = "<color=red>[방장]</color>" + playerNameList[i] + "님 " + "<color=red>" + readyStatus + "</color>";
+            else playerNameTemp[i].text = playerNameList[i] + "님 " + "<color=red>" + readyStatus + "</color>";
         }
 
-        Text tempPlayerStatus = null;
-        if (!playerNameList.Contains(p.NickName)) // 플레이어가 나간 경우
-        {
-            playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
-            Destroy(tempPlayerStatus);
-        }
-        else // 플레이어 정보가 갱신된 경우
-        {
-            if (playerDic.ContainsKey(p.NickName) == false) // 플레이어가 새로 들어온 경우
-            {
-                Text playerStatus = Instantiate(playerList, gridTR);
+        //Text tempPlayerStatus = null;
+        //if (!playerNameList.Contains(p.NickName)) // 플레이어가 나간 경우
+        //{
+        //    playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
+        //    Destroy(tempPlayerStatus);
+        //}
+        //else // 플레이어 정보가 갱신된 경우
+        //{
+        //    if (playerDic.ContainsKey(p.NickName) == false) // 플레이어가 새로 들어온 경우
+        //    {
+        //        Text playerStatus = Instantiate(playerList, gridTR);
 
-                if (p.IsMasterClient) playerStatus.text = "<color=red>[방장]</color>" + p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
-                else playerStatus.text = p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
+        //        if (p.IsMasterClient) playerStatus.text = "<color=red>[방장]</color>" + p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
+        //        else playerStatus.text = p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
 
-                playerDic.Add(p.NickName, playerStatus);
-            }
-            else // 기존의 상태 정보가 갱신된 경우
-            {
-                playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
+        //        playerDic.Add(p.NickName, playerStatus);
+        //    }
+        //    else // 기존의 상태 정보가 갱신된 경우
+        //    {
+        //        playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
 
-                if (p.IsMasterClient) playerStatus.text = "<color=red>[방장]</color>" + p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
-                else tempPlayerStatus.text = p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
-            }
-        }
+        //        if (p.IsMasterClient) playerStatus.text = "<color=red>[방장]</color>" + p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
+        //        else tempPlayerStatus.text = p.NickName + "님 " + "<color=red>" + readyStatus + "</color>";
+        //    }
+        //}
     }
 
 
     public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) // 프로퍼티 변경되면 자동으로 호출됨.
     {
         ReadyStatusRenew();
-        PlayerStatus(targetPlayer);
+        PlayerStatus();
         //photonView.RPC("PlayerStatus", RpcTarget.All, targetPlayer);
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
         ReadyStatusRenew();
-        PlayerStatus(newPlayer);
+        PlayerStatus();
         //photonView.RPC("PlayerStatus", RpcTarget.All, newPlayer);
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
         ReadyStatusRenew();
-        PlayerStatus(otherPlayer);
+        PlayerStatus();
         //photonView.RPC("PlayerStatus", RpcTarget.All, otherPlayer);
     }
 }

@@ -1278,7 +1278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pv: {fileID: 6340399115669776472}
   playerName: {fileID: 3229490860095807309}
-  speed: 12
+  speed: 200
   turnSmoothTime: 0.1
   turnSmoothVelocity: 5
 --- !u!114 &9040868404686808930

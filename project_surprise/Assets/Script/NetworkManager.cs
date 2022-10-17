@@ -79,7 +79,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     public void ConnectRandomRoom()
     {
         audioSource.PlayOneShot(clickClip);
-        connectRoomButton.interactable = false; // 중복 접속 시도를 막기위해 잠시 비활성화
+        //connectRoomButton.interactable = false; // 중복 접속 시도를 막기위해 잠시 비활성화
 
         if(PhotonNetwork.IsConnected) // 마스터 서버에 접속 중이라면(마스터 서버에 접속이 안 된 상태에서 접속시도예외를 막기위해)
         {
