@@ -442,12 +442,12 @@ GameObject:
   - component: {fileID: 3268114656566030696}
   - component: {fileID: 8915579302303525650}
   - component: {fileID: 7422836526260466728}
-  - component: {fileID: 1247018744293358576}
-  - component: {fileID: 1944404559354425086}
-  - component: {fileID: 6746218988295296544}
   - component: {fileID: 8685148569479990214}
   - component: {fileID: -3032220243803227036}
   - component: {fileID: 1673606394825974311}
+  - component: {fileID: 1247018744293358576}
+  - component: {fileID: 1944404559354425086}
+  - component: {fileID: 6746218988295296544}
   m_Layer: 6
   m_Name: Potato
   m_TagString: Untagged
@@ -515,6 +515,49 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.18, z: 0}
+--- !u!114 &8685148569479990214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2743110381003992018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 910c96e01ed70a34e8222976a93f2cfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pv: {fileID: 1247018744293358576}
+  playerName: {fileID: 4739501695846647366}
+  speed: 6
+  speed_walk: 6
+  speed_run: 20
+  turnSmoothTime: 0.1
+  turnSmoothVelocity: 5
+--- !u!114 &-3032220243803227036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2743110381003992018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bb2d747c9afd504faed3bd0c641fcd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1673606394825974311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2743110381003992018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 273cd2b07123b3f438e8495015a5c4cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1247018744293358576
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,6 +603,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 0
     Name: Run
+  - Type: 9
+    SynchronizeType: 0
+    Name: Attack
   m_SynchronizeLayers:
   - SynchronizeType: 2
     LayerIndex: 0

@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public TextMesh playerName;
     Animator animator;
 
-    //º¯°æ º¯¼ö
+    //ë³€ê²½ ë³€ìˆ˜
     CharacterController controller = null;
     VirtualJoystick virtualJoystick = null;
     Camera cam;
@@ -20,11 +20,24 @@ public class PlayerController : MonoBehaviourPunCallbacks
     Vector3 joystickDirection;
     Vector3 moveDirection;
 
-    public float speed = 12f;
+    public float speed;
+    public float speed_walk = 6f;
+    public float speed_run = 20f;
 
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
     //
+
+    //ê³µê²©
+    GameObject atkCooltimePanel;
+    float atkCooltime = 3f;
+
+    //Run
+    GameObject runCooltimePanel;
+    float runTime = 0;
+    float runMaxTime = 4f;
+    float runCooltime = 3f;
+
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
 
@@ -32,17 +45,26 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsConnected)
             pv.RPC("GetPlayerName", RpcTarget.All);
-        //º¯°æÀü
+        //ë³€ê²½ì „
         /*playerInput = GetComponent<PlayerInput>();
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody>();*/
-        //º¯°æÈÄ
+        //ë³€ê²½í›„
         if(photonView.IsMine)
         {
+            playerInput = GetComponent<PlayerInput>();
             controller = GetComponent<CharacterController>();
             animator = GetComponent<Animator>();
             virtualJoystick = FindObjectOfType<VirtualJoystick>();
             cam = Camera.main;
+
+            //ê³µê²©
+            atkCooltimePanel = GameObject.Find("AtkCoolTime_Panel");
+            atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() =>
+                Attack()
+            );
+            //run
+            runCooltimePanel = GameObject.Find("RunCoolTime_Panel");
         }
 
     }
@@ -50,7 +72,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
-
         Move();
         animator.SetBool("Walk", isMove);
     }
@@ -72,30 +93,68 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             if (joystickDirection.magnitude >= 0.1f)
             {
-                isMove = true; // ¾Ö´Ï¸ŞÀÌ¼ÇÀ» À§ÇÑ bool°ª
+                isMove = true; // ì• ë‹ˆë©”ì´ì…˜ì„ ìœ„í•œ boolê°’
 
                 float targetAngle = Mathf.Atan2(joystickDirection.x, joystickDirection.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-                // Mathf.Atan2(x,y) : x¿Í yÀÇ °ªÀ¸·Î ¾ÆÅ©ÅºÁ¨Æ®ÇÔ¼ö¸¦ ÀÌ¿ëÇØ ¿¬»êÇØ °á°ú¸¦ ¶óµğ¾È°ªÀ¸·Î ¹İÈ¯
-                // Mathf.Rad2Deg : ÀÏ¹İ °¢µµ¸¦ ¶óµğ¾È°ªÀ¸·Î º¯È¯
-                // cam È¸Àü°ªÀÌ ±âº»ÀÎ »óÅÂ(cam.eulerAngles.y)¿¡¼­ ÇÃ·¹ÀÌ¾î È¸Àü ÀÎÇ²°ª(Mathf.Atan2(direction.x, direction.z))À» ³Ö´Â´Ù
-                // AcrTan(x/y)¸¦ ÀÇ¹Ì -> À¯´ÏÆ¼ ÁÂÇ¥°è´Â yÃà + ¹æÇâÀÌ 0µµ·Î ½Ã°è¹æÇâ ÁÂÇ¥°è¸¦ ¾²±â ¶§¹®¿¡ y/x°¡ ¾Æ´Ñ x/y
-                // Atan´Â Àı´ë°¢À» -¥ğ/2 ~ ¥ğ/2ÀÇ ¶óµğ¾È °ªÀ¸·Î ¹İÈ¯
-                // Atan2´Â µÎ Á¡ »çÀÌÀÇ »ó´ëÁÂÇ¥(x, y)¸¦ ¹Ş¾Æ Àı´ë°¢À» -¥ğ ~ ¥ğÀÇ ¶óµğ¾È °ªÀ¸·Î ¹İÈ¯ -> µ¥Ä«¸£Æ® ÁÂÇ¥¿¡ À¯¿ë. À½¼ö¸¦ Çã¿ë
+                // Mathf.Atan2(x,y) : xì™€ yì˜ ê°’ìœ¼ë¡œ ì•„í¬íƒ„ì  íŠ¸í•¨ìˆ˜ë¥¼ ì´ìš©í•´ ì—°ì‚°í•´ ê²°ê³¼ë¥¼ ë¼ë””ì•ˆê°’ìœ¼ë¡œ ë°˜í™˜
+                // Mathf.Rad2Deg : ì¼ë°˜ ê°ë„ë¥¼ ë¼ë””ì•ˆê°’ìœ¼ë¡œ ë³€í™˜
+                // cam íšŒì „ê°’ì´ ê¸°ë³¸ì¸ ìƒíƒœ(cam.eulerAngles.y)ì—ì„œ í”Œë ˆì´ì–´ íšŒì „ ì¸í’‹ê°’(Mathf.Atan2(direction.x, direction.z))ì„ ë„£ëŠ”ë‹¤
+                // AcrTan(x/y)ë¥¼ ì˜ë¯¸ -> ìœ ë‹ˆí‹° ì¢Œí‘œê³„ëŠ” yì¶• + ë°©í–¥ì´ 0ë„ë¡œ ì‹œê³„ë°©í–¥ ì¢Œí‘œê³„ë¥¼ ì“°ê¸° ë•Œë¬¸ì— y/xê°€ ì•„ë‹Œ x/y
+                // AtanëŠ” ì ˆëŒ€ê°ì„ -Ï€/2 ~ Ï€/2ì˜ ë¼ë””ì•ˆ ê°’ìœ¼ë¡œ ë°˜í™˜
+                // Atan2ëŠ” ë‘ ì  ì‚¬ì´ì˜ ìƒëŒ€ì¢Œí‘œ(x, y)ë¥¼ ë°›ì•„ ì ˆëŒ€ê°ì„ -Ï€ ~ Ï€ì˜ ë¼ë””ì•ˆ ê°’ìœ¼ë¡œ ë°˜í™˜ -> ë°ì¹´ë¥´íŠ¸ ì¢Œí‘œì— ìœ ìš©. ìŒìˆ˜ë¥¼ í—ˆìš©
 
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-                //ÇöÀç°¢°ú ¸ñÇ¥ È¸Àü°ª±îÁö »çÀÌÀÇ ÀÚ¿¬½º·¯¿î È¸ÀüÀ» À§ÇÑ °¢µµ¸¦ °è¼ÓÇØ¼­ °è»ê
+                //í˜„ì¬ê°ê³¼ ëª©í‘œ íšŒì „ê°’ê¹Œì§€ ì‚¬ì´ì˜ ìì—°ìŠ¤ëŸ¬ìš´ íšŒì „ì„ ìœ„í•œ ê°ë„ë¥¼ ê³„ì†í•´ì„œ ê³„ì‚°
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-                //targetangle ¹æÇâÀÇ zÃà °ª(¾Õ ¹æÇâ)¸¸À» ÃëÇÑ´Ù
-            } 
+                //targetangle ë°©í–¥ì˜ zì¶• ê°’(ì• ë°©í–¥)ë§Œì„ ì·¨í•œë‹¤
+
+                Run();
+
+                controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.moveì™€ ë‹¤ë¥¸ ì ì€ Time.deltaTimeë¥¼ ê³±í•´ì£¼ì§€ ì•Šì•„ë„ ë¨. ë˜ ì§€ë©´ ë°©í–¥ ì„¤ì •ì„ í•´ì£¼ë©´ ì¤‘ë ¥ì€ ìë™ ê³„ì‚° í•´ì¤€ë‹¤
+            }
             else
             {
-                isMove = false;//¾Ö´Ï¸ŞÀÌ¼ÇÀ» À§ÇÑ bool°ª
+                isMove = false;//ì• ë‹ˆë©”ì´ì…˜ì„ ìœ„í•œ boolê°’
 
                 moveDirection = Vector3.zero;
             }
-            controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move¿Í ´Ù¸¥ Á¡Àº Time.deltaTime¸¦ °öÇØÁÖÁö ¾Ê¾Æµµ µÊ. ¶Ç Áö¸é ¹æÇâ ¼³Á¤À» ÇØÁÖ¸é Áß·ÂÀº ÀÚµ¿ °è»ê ÇØÁØ´Ù
+            controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.moveì™€ ë‹¤ë¥¸ ì ì€ Time.deltaTimeë¥¼ ê³±í•´ì£¼ì§€ ì•Šì•„ë„ ë¨. ë˜ ì§€ë©´ ë°©í–¥ ì„¤ì •ì„ í•´ì£¼ë©´ ì¤‘ë ¥ì€ ìë™ ê³„ì‚° í•´ì¤€ë‹¤
         }
+    }
+
+    public void Attack()
+    {
+        animator.SetTrigger("Attack");
+        atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
+        atkCooltimePanel.SetActive(true);
+    }
+
+    void Run()
+    {
+        if(playerInput.run)
+        {
+            if(1 < runTime / runMaxTime)
+            {
+                playerInput.run = false;
+                runTime = runMaxTime;
+                runCooltimePanel.GetComponent<CoolTime>().SetCoolTime(runCooltime);
+                runCooltimePanel.SetActive(true);
+            }
+            runTime += Time.deltaTime;
+        }
+        else if(!playerInput.run && runTime > 0)
+        {
+            if(runTime < 0)
+            {
+                runTime = 0f;
+            }
+            else
+            {
+                runTime -= Time.deltaTime;
+            }
+        }
+        speed = playerInput.run ? speed_run : speed_walk;
     }
 }
