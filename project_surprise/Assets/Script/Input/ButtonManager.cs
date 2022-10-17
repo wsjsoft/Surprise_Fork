@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 using Photon.Realtime;
-using Hashtable = ExitGames.Client.Photon.Hashtable; // À¯´ÏÆ¼¿¡¼­ Á¦°øÇÏ´Â hashtable°ú °ãÄ¡±â ¶§¹®¿¡ ÇÊ¿ä!
+using Hashtable = ExitGames.Client.Photon.Hashtable; // ìœ ë‹ˆí‹°ì—ì„œ ì œê³µí•˜ëŠ” hashtableê³¼ ê²¹ì¹˜ê¸° ë•Œë¬¸ì— í•„ìš”!
 
 public class ButtonManager : MonoBehaviourPunCallbacks
 {
@@ -22,47 +22,47 @@ public class ButtonManager : MonoBehaviourPunCallbacks
 
     Dictionary<string, Text> playerDic = new Dictionary<string, Text>();
 
+    [Header("Run")]
+    [SerializeField] Button runButton;
+
+    [Header("PlayerList")]
+    [SerializeField] Transform scrollContent;
+    [SerializeField] GameObject playerList;
+
     Hashtable temp = new Hashtable();
     Hashtable playerName = new Hashtable();
 
     void Awake()
     {
+        Debug.Log("ì”¬ ì „í™˜");
         playerInput = FindObjectOfType<PlayerInput>();
-
-        playerName.Add("´Ğ³×ÀÓ", PhotonNetwork.LocalPlayer.NickName);
-        PhotonNetwork.LocalPlayer.SetCustomProperties(playerName);
-
-        if (PhotonNetwork.IsMasterClient)
-        {
-            temp.Add("ÁØºñ¿Ï·á", 1);
-            readyText.gameObject.SetActive(false);
-        }
-        else
-        {
-            temp.Add("ÁØºñ¿Ï·á", 0);
-            readyText.gameObject.SetActive(true);
-        }
-        PhotonNetwork.LocalPlayer.SetCustomProperties(temp);
+        temp.Add("ì¤€ë¹„ì™„ë£Œ", 0);
+        Debug.Log("ë‹‰ë„¤ì„" + PhotonNetwork.LocalPlayer.NickName);
+        
+        PlayerState();
+        //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "ì¤€ë¹„", num } }); 
+        //ht = PhotonNetwork.LocalPlayer.CustomProperties;
     }
+
     public void RunButtonDown()
     {
-        playerInput.run = true; // PlayerInputÀÇ Update¿¡¼­ ¸Å¹ø °Ë»çÇÏÁö¾Ê¾ÆµµµÇ¼­ ¿©±â¼­ ³Ö´Â°Ô ³ªÀº°Å°°±âµµ,,
-        Debug.Log("¹öÆ°Down ´­¸²");
+        playerInput.run = true; // PlayerInputì˜ Updateì—ì„œ ë§¤ë²ˆ ê²€ì‚¬í•˜ì§€ì•Šì•„ë„ë˜ì„œ ì—¬ê¸°ì„œ ë„£ëŠ”ê²Œ ë‚˜ì€ê±°ê°™ê¸°ë„,,
+        Debug.Log("ë²„íŠ¼Down ëˆŒë¦¼");
     }
     public void RunButtonUp()
     {
         playerInput.run = false;
-        Debug.Log("¹öÆ°Up ´­¸²");
+        Debug.Log("ë²„íŠ¼Up ëˆŒë¦¼");
     }
     public void AttackButtonDown()
     {
         playerInput.attack = true;
-        Debug.Log("¹öÆ°Down ´­¸²");
+        Debug.Log("ë²„íŠ¼Down ëˆŒë¦¼");
     }
     public void AttackButtonUp()
     {
         playerInput.attack = false;
-        Debug.Log("¹öÆ°Up ´­¸²");
+        Debug.Log("ë²„íŠ¼Up ëˆŒë¦¼");
     }
     public void ReadyButton()
     {
@@ -71,120 +71,96 @@ public class ButtonManager : MonoBehaviourPunCallbacks
         ++readyButton;
         if (readyButton % 2 == 1)
         {
-            readyText.text = "ÁØºñ¿Ï·á!";
-            temp["ÁØºñ¿Ï·á"] = 1;
+            readyText.text = "ì¤€ë¹„ì™„ë£Œ!";
+            temp["ì¤€ë¹„ì™„ë£Œ"] = 1;
         }
         else
         {
-            readyText.text = "ÁØºñÇÏ·Á¸é ´­·¯ÁÖ¼¼¿ä!";
-            temp["ÁØºñ¿Ï·á"] = 0;
+            readyText.text = "ì¤€ë¹„í•˜ë ¤ë©´ ëˆŒëŸ¬ì£¼ì„¸ìš”!";
+            temp["ì¤€ë¹„ì™„ë£Œ"] = 0;
         }
         PhotonNetwork.LocalPlayer.SetCustomProperties(temp);
     }
     void ReadyStatusRenew()
     {
-        Debug.Log((string)PhotonNetwork.LocalPlayer.CustomProperties["´Ğ³×ÀÓ"]);
+        Debug.Log((string)PhotonNetwork.LocalPlayer.CustomProperties["ë‹‰ë„¤ì„"]);
         readyCnt = 0;
         Debug.Log("PlayerLength : " + PhotonNetwork.PlayerList.Length);
         for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
         {
-            readyCnt += (int)PhotonNetwork.PlayerList[i].CustomProperties["ÁØºñ¿Ï·á"];
+            readyCnt += (int)PhotonNetwork.PlayerList[i].CustomProperties["ì¤€ë¹„ì™„ë£Œ"];
         }
         Debug.Log("readyCnt : " + readyCnt);
         if (PhotonNetwork.IsMasterClient)
         {
-            if (!isReady) // ¹æÀå ÁØºñ¹öÆ°ÀÌ ¹Ù·Î È°¼ºÈ­ µÇ´Â °É ¸·À¸·Á°í ³ÖÀ½
+            if (!isReady) // ë°©ì¥ ì¤€ë¹„ë²„íŠ¼ì´ ë°”ë¡œ í™œì„±í™” ë˜ëŠ” ê±¸ ë§‰ìœ¼ë ¤ê³  ë„£ìŒ
             {
                 readyCnt -= 1;
                 isReady = true;
             }
-            if ((readyCnt == PhotonNetwork.CurrentRoom.PlayerCount) && isReady ) // ¹æÀåÀÇ ·¹µğÄ«¿îÆ®°¡ ¹æÀå»©°í ´Ù¸¥ ÇÃ·¹¾î¾î ¼ö¿Í °°À¸¸é
+            if ((readyCnt == PhotonNetwork.CurrentRoom.PlayerCount) && isReady ) // ë°©ì¥ì˜ ë ˆë””ì¹´ìš´íŠ¸ê°€ ë°©ì¥ë¹¼ê³  ë‹¤ë¥¸ í”Œë ˆì–´ì–´ ìˆ˜ì™€ ê°™ìœ¼ë©´
             {
-                readyText.gameObject.SetActive(true); // ¹æÀåÀÇ ÁØºñ¹öÆ° È°¼ºÈ­
-                readyText.text = "°ÔÀÓÀ» ½ÃÀÛÇÏ·Á¸é ´­·¯ÁÖ¼¼¿ä!";
+                readyText.gameObject.SetActive(true); // ë°©ì¥ì˜ ì¤€ë¹„ë²„íŠ¼ í™œì„±í™”
+                readyText.text = "ê²Œì„ì„ ì‹œì‘í•˜ë ¤ë©´ ëˆŒëŸ¬ì£¼ì„¸ìš”!";
             }
-            else if((readyCnt != PhotonNetwork.CurrentRoom.PlayerCount) && isReady) // ¸ğµÎ ·¹µğ°¡µÇ¼­ ¹æÀåÀÇ ÁØºñ¹öÆ°ÀÌ È°¼ºÈ­‰ç´Âµ¥ µµÁß¿¡ ´Ù¸¥ ÇÃ·¹ÀÌ¾î ÀÔÀå ½Ã ´Ù½Ã ÁØºñ¹öÆ° ²¨ÁÖ±â
+            else if((readyCnt != PhotonNetwork.CurrentRoom.PlayerCount) && isReady) // ëª¨ë‘ ë ˆë””ê°€ë˜ì„œ ë°©ì¥ì˜ ì¤€ë¹„ë²„íŠ¼ì´ í™œì„±í™”Â‰æ¦®ì¨‰ ë„ì¤‘ì— ë‹¤ë¥¸ í”Œë ˆì´ì–´ ì…ì¥ ì‹œ ë‹¤ì‹œ ì¤€ë¹„ë²„íŠ¼ êº¼ì£¼ê¸°
             {
-                readyText.gameObject.SetActive(false); // ¹æÀåÀÇ ÁØºñ¹öÆ° È°¼ºÈ­
+                readyText.gameObject.SetActive(false); // ë°©ì¥ì˜ ì¤€ë¹„ë²„íŠ¼ í™œì„±í™”
             }
         }
     }
 
     //[PunRPC]
-    void PlayerStatus()
+    void PlayerState()
     {
-        //Photon.Realtime.Player p
-        Debug.Log("ÇÃ·¹ÀÌ¾î ¸®½ºÆ® »ı¼º");
-        //int tmp = (int)p.CustomProperties["ÁØºñ¿Ï·á"];
-        //string readyStatus = new string("");
-        //readyStatus = tmp == 1 ? "ÁØºñ¿Ï·á" : "¾ÆÁ÷ ÁØºñ Áß..";
-
-        List<string> playerNameList = new List<string>();
-        List<int> playerStatusList = new List<int>();
-        Debug.Log("ÇÃ·¹ÀÌ¾î ¸®½ºÆ® »ı¼º2");
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        Transform[] childList = scrollContent.GetComponentsInChildren<Transform>();
+        Debug.Log("ìì‹ì˜¤ë¸Œì íŠ¸ " + childList.Length);
+        if(childList != null)
         {
-            //playerNameList.Add((string)PhotonNetwork.PlayerList[i].CustomProperties["´Ğ³×ÀÓ"]);
-            playerNameList[i] = (string)PhotonNetwork.PlayerList[i].CustomProperties["´Ğ³×ÀÓ"];
-            Debug.Log(playerNameList[i]);
-            playerStatusList[i] = (int)PhotonNetwork.PlayerList[i].CustomProperties["ÁØºñ¿Ï·á"];
+            for (int i = 1; i < childList.Length; i++)
+            {
+                if(childList[i] != scrollContent)
+                {
+                    Destroy(childList[i].gameObject);
+                    Debug.Log("list ì‚­ì œ");
+                }
+            }
         }
 
-        for (int i = 0; i < PhotonNetwork.CurrentRoom.PlayerCount; i++)
+        for(int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
         {
-            //playerNameTemp[i].text = playerNameList[i];
-            string readyStatus = playerStatusList[i] == 1 ? "ÁØºñ¿Ï·á" : "¾ÆÁ÷ ÁØºñ Áß..";
+            GameObject list = Instantiate(playerList, scrollContent);
+            Debug.Log("list ìƒì„±");
+            Text playerName = list.transform.GetChild(0).GetComponent<Text>();
+            Text ready = list.transform.GetChild(1).GetComponent<Text>();
 
-            if (PhotonNetwork.LocalPlayer.IsMasterClient) playerNameTemp[i].text = "<color=red>[¹æÀå]</color>" + playerNameList[i] + "´Ô " + "<color=red>" + readyStatus + "</color>";
-            else playerNameTemp[i].text = playerNameList[i] + "´Ô " + "<color=red>" + readyStatus + "</color>";
+            playerName.text = (string)PhotonNetwork.PlayerList[i].CustomProperties["ë‹‰ë„¤ì„"];
+            Debug.Log((string)PhotonNetwork.PlayerList[i].CustomProperties["ë‹‰ë„¤ì„"]);
+            
+            bool isReady = 1 == (int)PhotonNetwork.PlayerList[i].CustomProperties["ì¤€ë¹„ì™„ë£Œ"];
+            ready.text = isReady ? "Ready" : "not Ready";
         }
-
-        //Text tempPlayerStatus = null;
-        //if (!playerNameList.Contains(p.NickName)) // ÇÃ·¹ÀÌ¾î°¡ ³ª°£ °æ¿ì
-        //{
-        //    playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
-        //    Destroy(tempPlayerStatus);
-        //}
-        //else // ÇÃ·¹ÀÌ¾î Á¤º¸°¡ °»½ÅµÈ °æ¿ì
-        //{
-        //    if (playerDic.ContainsKey(p.NickName) == false) // ÇÃ·¹ÀÌ¾î°¡ »õ·Î µé¾î¿Â °æ¿ì
-        //    {
-        //        Text playerStatus = Instantiate(playerList, gridTR);
-
-        //        if (p.IsMasterClient) playerStatus.text = "<color=red>[¹æÀå]</color>" + p.NickName + "´Ô " + "<color=red>" + readyStatus + "</color>";
-        //        else playerStatus.text = p.NickName + "´Ô " + "<color=red>" + readyStatus + "</color>";
-
-        //        playerDic.Add(p.NickName, playerStatus);
-        //    }
-        //    else // ±âÁ¸ÀÇ »óÅÂ Á¤º¸°¡ °»½ÅµÈ °æ¿ì
-        //    {
-        //        playerDic.TryGetValue(p.NickName, out tempPlayerStatus);
-
-        //        if (p.IsMasterClient) playerStatus.text = "<color=red>[¹æÀå]</color>" + p.NickName + "´Ô " + "<color=red>" + readyStatus + "</color>";
-        //        else tempPlayerStatus.text = p.NickName + "´Ô " + "<color=red>" + readyStatus + "</color>";
-        //    }
-        //}
     }
 
-
-    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) // ÇÁ·ÎÆÛÆ¼ º¯°æµÇ¸é ÀÚµ¿À¸·Î È£ÃâµÊ.
+    public override void OnPlayerPropertiesUpdate(Photon.Realtime.Player targetPlayer, Hashtable changedProps) // í”„ë¡œí¼í‹° ë³€ê²½ë˜ë©´ ìë™ìœ¼ë¡œ í˜¸ì¶œë¨.
     {
+        Debug.Log("í”Œë ˆì´ì–´ ìƒíƒœ ì—…ë°ì´íŠ¸");
+        PlayerState();
         ReadyStatusRenew();
-        PlayerStatus();
-        //photonView.RPC("PlayerStatus", RpcTarget.All, targetPlayer);
     }
 
     public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
     {
+        Debug.Log("í”Œë ˆì´ì–´ ì…ì¥");
+        PlayerState();
         ReadyStatusRenew();
-        PlayerStatus();
-        //photonView.RPC("PlayerStatus", RpcTarget.All, newPlayer);
+
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)
     {
+        Debug.Log("í”Œë ˆì´ì–´ í‡´ì¥");
+        PlayerState();
         ReadyStatusRenew();
-        PlayerStatus();
-        //photonView.RPC("PlayerStatus", RpcTarget.All, otherPlayer);
     }
 }

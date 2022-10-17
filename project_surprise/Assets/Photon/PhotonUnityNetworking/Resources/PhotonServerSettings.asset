@@ -43,7 +43,7 @@ MonoBehaviour:
   - GameReady
   - PushReadyButton
   - ReadyButton
-  - PlayerStatus
+  - PlayerState
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

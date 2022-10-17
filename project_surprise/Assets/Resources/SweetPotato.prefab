@@ -1127,12 +1127,12 @@ GameObject:
   - component: {fileID: 8462134818311117573}
   - component: {fileID: 2562449356139250047}
   - component: {fileID: 6822973256350260344}
-  - component: {fileID: 3716159949399503145}
-  - component: {fileID: 8647227800958658469}
-  - component: {fileID: 6340399115669776472}
   - component: {fileID: 2468457929127562307}
   - component: {fileID: 9040868404686808930}
   - component: {fileID: 3391743997527122234}
+  - component: {fileID: 3716159949399503145}
+  - component: {fileID: 8647227800958658469}
+  - component: {fileID: 6340399115669776472}
   m_Layer: 7
   m_Name: SweetPotato
   m_TagString: Untagged
@@ -1237,6 +1237,9 @@ MonoBehaviour:
   - Type: 4
     SynchronizeType: 1
     Name: Run
+  - Type: 9
+    SynchronizeType: 0
+    Name: Attack
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
