@@ -11,16 +11,11 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     public PhotonView pv;
     PlayerInput playerInput;
     public Text readyText;
-    public Text playerList;
-    public Transform gridTR;
 
     Text playerStatus = null;
     int readyButton = 0;
     int readyCnt = 0;
     bool isReady = false;
-    public Text[] playerNameTemp;
-
-    Dictionary<string, Text> playerDic = new Dictionary<string, Text>();
 
     [Header("Run")]
     [SerializeField] Button runButton;
@@ -30,29 +25,21 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     [SerializeField] GameObject playerList;
 
     Hashtable temp = new Hashtable();
-    Hashtable playerName = new Hashtable();
 
-    void Awake()
+    private void Start()
     {
-        Debug.Log("씬 전환");
         playerInput = FindObjectOfType<PlayerInput>();
-        temp.Add("준비완료", 0);
-        Debug.Log("닉네임" + PhotonNetwork.LocalPlayer.NickName);
-        
+
         PlayerState();
-        //PhotonNetwork.LocalPlayer.SetCustomProperties(new Hashtable { { "준비", num } }); 
-        //ht = PhotonNetwork.LocalPlayer.CustomProperties;
     }
 
     public void RunButtonDown()
     {
         playerInput.run = true; // PlayerInput의 Update에서 매번 검사하지않아도되서 여기서 넣는게 나은거같기도,,
-        Debug.Log("버튼Down 눌림");
     }
     public void RunButtonUp()
     {
         playerInput.run = false;
-        Debug.Log("버튼Up 눌림");
     }
     public void AttackButtonDown()
     {
@@ -138,7 +125,7 @@ public class ButtonManager : MonoBehaviourPunCallbacks
             Debug.Log((string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"]);
             
             bool isReady = 1 == (int)PhotonNetwork.PlayerList[i].CustomProperties["준비완료"];
-            ready.text = isReady ? "Ready" : "not Ready";
+            ready.text = isReady ? "Ready" : "";
         }
     }
 
@@ -154,7 +141,6 @@ public class ButtonManager : MonoBehaviourPunCallbacks
         Debug.Log("플레이어 입장");
         PlayerState();
         ReadyStatusRenew();
-
     }
 
     public override void OnPlayerLeftRoom(Photon.Realtime.Player otherPlayer)

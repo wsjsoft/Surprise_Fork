@@ -184,7 +184,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 
     void GetOnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("RoomScene");
+        PhotonNetwork.LoadLevel("Room");
     }
 
 }
