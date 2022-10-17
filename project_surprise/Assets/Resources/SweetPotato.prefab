@@ -474,7 +474,7 @@ TextMesh:
   m_Anchor: 4
   m_Alignment: 0
   m_TabSize: 4
-  m_FontSize: 64
+  m_FontSize: 50
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 01a809ae6afdb784aa93d551691834b2, type: 3}
@@ -1199,7 +1199,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.2, z: 0}
+  m_Center: {x: 0, y: 0.22, z: 0}
 --- !u!114 &3716159949399503145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1261,7 +1261,6 @@ MonoBehaviour:
   ObservedComponents:
   - {fileID: 3716159949399503145}
   - {fileID: 8647227800958658469}
-  - {fileID: 8647227800958658469}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -1279,7 +1278,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pv: {fileID: 6340399115669776472}
   playerName: {fileID: 3229490860095807309}
-  speed: 6
+  speed: 200
   turnSmoothTime: 0.1
   turnSmoothVelocity: 5
 --- !u!114 &9040868404686808930

@@ -593,7 +593,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pv: {fileID: 1247018744293358576}
   playerName: {fileID: 4739501695846647366}
-  speed: 6
+  speed: 200
   turnSmoothTime: 0.1
   turnSmoothVelocity: 5
 --- !u!114 &-3032220243803227036
@@ -1029,7 +1029,7 @@ TextMesh:
   m_Anchor: 4
   m_Alignment: 0
   m_TabSize: 4
-  m_FontSize: 64
+  m_FontSize: 50
   m_FontStyle: 0
   m_RichText: 1
   m_Font: {fileID: 12800000, guid: 01a809ae6afdb784aa93d551691834b2, type: 3}
