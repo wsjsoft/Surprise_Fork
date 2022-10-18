@@ -111,7 +111,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
 
-                Run();
+                Run();//뛰는 경우와 걷는 경우 speed값을 여기서 조절해준다
             }
             else
             {
@@ -127,36 +127,33 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         animator.SetTrigger("Attack");
         Instantiate(attackFX, attackPos.position, attackPos.rotation);
-        atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
-        atkCooltimePanel.SetActive(true);
+        atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);//쿨타임 패널에 공격 쿨타임 정보 넘겨주기
+        atkCooltimePanel.SetActive(true);//쿨타임 패널 활성화. -> 쿨타임 동안 버튼을 비활성화 시키고 쿨타임 시간만큼 돌아가는 패널 위의 슬라이더를 생성함.
     }
 
-    void Run()
+    void Run()// runTime = 0 에서 부터 시작하며 달리기 버튼을 눌렀을 때 runMaxTime까지 커질 수 있으며 max 값까지 도달하지 않고 중간에 손을 땐 경우 Time.deltaTime을 계속 빼주면서 0값을 만든다.
     {
-        if(playerInput.run)
+        if(playerInput.run)//달리기 버튼을 눌렀을 때
         {
-            if(1 < runTime / runMaxTime)
+            if(1 < runTime / runMaxTime) //달릴 수 있는 총 시간을 모두 소모한 경우
             {
                 runFX.Play();
-                playerInput.run = false;
-                runTime = runMaxTime;
-                runCooltimePanel.GetComponent<CoolTime>().SetCoolTime(runCooltime);
-                runCooltimePanel.SetActive(true);
+                playerInput.run = false;//달리지 않는 상태라는 bool값 갱신
+                //runTime = runMaxTime;
+                runCooltimePanel.GetComponent<CoolTime>().SetCoolTime(runCooltime);//coolTime panel에 달리기 쿨타임 값 전달
+                runCooltimePanel.SetActive(true);//쿨타임 패널 활성화 -> 쿨타임 동안 버튼을 비활성화 시키고 쿨타임 시간만큼 돌아가는 패널 위의 슬라이더를 생성함.
             }
             runTime += Time.deltaTime;
         }
-        else if(!playerInput.run && runTime > 0)
+        else if(!playerInput.run && runTime > 0)//달리기 버튼에서 손을 땠는데 달릴 수 있는 총 시간을 아직 소모하지 않은 경우
         {
-            if(runTime < 0)
+            runFX.Stop();
+            runTime -= Time.deltaTime;//runTime 충전
+            if (runTime < 0)//Time.deltaTime을 빼고 있어서 딱 0이 되지 않기 때문에 0보다 작아지면 0값으로 만들어준다
             {
                 runTime = 0f;
             }
-            else
-            {
-                runTime -= Time.deltaTime;
-            }
         }
-        else runFX.Stop();
-        speed = playerInput.run ? speed_run : speed_walk;
+        speed = playerInput.run ? speed_run : speed_walk;//걷는지 뛰는지에 따른 speed 값 조절
     }
 }
