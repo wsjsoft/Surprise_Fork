@@ -16,16 +16,21 @@ public class CoolTime : MonoBehaviour
 
     private void Awake()
     {
-        button = transform.parent.GetComponent<Button>();//부모오브젝트의 버튼
+        button = transform.parent.GetComponent<Button>(); // 부모오브젝트의 버튼
 
         slider = GetComponentInChildren<Slider>();
-        gameObject.SetActive(false);
     }
 
     private void OnEnable()
     {
         slider.maxValue = 1;
-        button.interactable = false;//쿨타임이므로 버튼 비활성화
+        button.interactable = false; // 쿨타임이므로 버튼 비활성화
+    }
+
+    private void Start()
+    {
+        button.interactable = true;
+        gameObject.SetActive(false);
     }
 
     public void SetCoolTime(float time)

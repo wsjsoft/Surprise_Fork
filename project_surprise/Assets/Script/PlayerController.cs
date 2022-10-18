@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public PhotonView pv;
     public TextMesh playerName;
     Animator animator;
+    PlayerInput playerInput;
 
     //변경 변수
     CharacterController controller = null;
@@ -26,17 +27,20 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     public float turnSmoothTime = 0.1f;
     public float turnSmoothVelocity;
-    //
+    
 
     //공격
-    GameObject atkCooltimePanel;
+    [SerializeField] GameObject atkCooltimePanel;
     float atkCooltime = 3f;
+    public GameObject attackFX;
+    public Transform attackPos;
 
     //Run
     GameObject runCooltimePanel;
     float runTime = 0;
     float runMaxTime = 4f;
     float runCooltime = 3f;
+    public ParticleSystem runFX;
 
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
@@ -45,11 +49,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsConnected)
             pv.RPC("GetPlayerName", RpcTarget.All);
-        //변경전
-        /*playerInput = GetComponent<PlayerInput>();
-        animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();*/
-        //변경후
+
         if(photonView.IsMine)
         {
             playerInput = GetComponent<PlayerInput>();
@@ -60,11 +60,11 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
             //공격
             atkCooltimePanel = GameObject.Find("AtkCoolTime_Panel");
-            atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() =>
-                Attack()
-            );
+            
+            atkCooltimePanel.transform.parent.GetComponent<Button>().onClick.AddListener(() => Attack());
             //run
             runCooltimePanel = GameObject.Find("RunCoolTime_Panel");
+            
         }
 
     }
@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     void FixedUpdate()
     {
         if (!photonView.IsMine) return;
+
         Move();
         animator.SetBool("Walk", isMove);
     }
@@ -97,7 +98,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
                 float targetAngle = Mathf.Atan2(joystickDirection.x, joystickDirection.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
                 // Mathf.Atan2(x,y) : x와 y의 값으로 아크탄젠트함수를 이용해 연산해 결과를 라디안값으로 반환
-                // Mathf.Rad2Deg : 일반 각도를 라디안값으로 변환
+                // Mathf.Rad2Deg : 라디안을 일반각도로 변환
                 // cam 회전값이 기본인 상태(cam.eulerAngles.y)에서 플레이어 회전 인풋값(Mathf.Atan2(direction.x, direction.z))을 넣는다
                 // AcrTan(x/y)를 의미 -> 유니티 좌표계는 y축 + 방향이 0도로 시계방향 좌표계를 쓰기 때문에 y/x가 아닌 x/y
                 // Atan는 절대각을 -π/2 ~ π/2의 라디안 값으로 반환
@@ -111,8 +112,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 //targetangle 방향의 z축 값(앞 방향)만을 취한다
 
                 Run();
-
-                controller.SimpleMove(moveDirection.normalized * speed * Time.deltaTime); //controller.move와 다른 점은 Time.deltaTime를 곱해주지 않아도 됨. 또 지면 방향 설정을 해주면 중력은 자동 계산 해준다
             }
             else
             {
@@ -127,6 +126,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public void Attack()
     {
         animator.SetTrigger("Attack");
+        Instantiate(attackFX, attackPos.position, attackPos.rotation);
         atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
         atkCooltimePanel.SetActive(true);
     }
@@ -137,6 +137,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
         {
             if(1 < runTime / runMaxTime)
             {
+                runFX.Play();
                 playerInput.run = false;
                 runTime = runMaxTime;
                 runCooltimePanel.GetComponent<CoolTime>().SetCoolTime(runCooltime);
@@ -155,6 +156,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 runTime -= Time.deltaTime;
             }
         }
+        else runFX.Stop();
         speed = playerInput.run ? speed_run : speed_walk;
     }
 }
