@@ -30,6 +30,11 @@ public class ButtonManager : MonoBehaviourPunCallbacks
     {
         playerInput = FindObjectOfType<PlayerInput>();
 
+        if (PhotonNetwork.IsMasterClient)
+            readyText.gameObject.SetActive(false);
+        else
+            readyText.gameObject.SetActive(true);
+        
         PlayerState();
     }
 
@@ -124,8 +129,8 @@ public class ButtonManager : MonoBehaviourPunCallbacks
             playerName.text = (string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"];
             Debug.Log((string)PhotonNetwork.PlayerList[i].CustomProperties["닉네임"]);
             
-            bool isReady = 1 == (int)PhotonNetwork.PlayerList[i].CustomProperties["준비완료"];
-            ready.text = isReady ? "Ready" : "";
+            bool isReady1 = 1 == (int)PhotonNetwork.PlayerList[i].CustomProperties["준비완료"];
+            ready.text = isReady1 ? "Ready" : "";
         }
     }
 

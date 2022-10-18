@@ -6178,17 +6178,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8560856807067853230, guid: be1cf474108aa9a419510192fede55de, type: 3}
   m_PrefabInstance: {fileID: 178635323}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &178635325 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2302714195621528648, guid: be1cf474108aa9a419510192fede55de, type: 3}
-  m_PrefabInstance: {fileID: 178635323}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &178635326 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8560856808581910094, guid: be1cf474108aa9a419510192fede55de, type: 3}
@@ -8848,7 +8837,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &746447845
 PrefabInstance:
@@ -9852,7 +9841,7 @@ Transform:
   - {fileID: 1183447865}
   - {fileID: 1631919123}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &895412791
 PrefabInstance:
@@ -16532,17 +16521,6 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 0.5}
   m_EffectDistance: {x: 3, y: -3}
   m_UseGraphicAlpha: 1
---- !u!114 &1166566063 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2302714195621528648, guid: be1cf474108aa9a419510192fede55de, type: 3}
-  m_PrefabInstance: {fileID: 1911541322}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d199490a83bb2b844b9695cbf13b01ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1182010408 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 411200, guid: ef4fcc24e9a681a45bf87bec627dd9fd, type: 3}
@@ -17192,7 +17170,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1340528573
 PrefabInstance:
@@ -22363,12 +22341,12 @@ MonoBehaviour:
   connectionInfoText: {fileID: 206296898}
   connectServerButton: {fileID: 178635329}
   connectRoomButton: {fileID: 0}
-  nicknameInput: {fileID: 178635325}
-  roomNameInput: {fileID: 1166566063}
+  nicknameInput: {fileID: 96568971}
+  roomNameInput: {fileID: 339344306}
   nicknameInputPanel: {fileID: 178635328}
   joinRoomPanel: {fileID: 1897452767}
   room: {fileID: 5320952942503086594, guid: 154e30b73b6754e448a175025339a2f5, type: 3}
-  gridTR: {fileID: 287075292}
+  gridTR: {fileID: 1603730457}
   clickClip: {fileID: 8300000, guid: 740beea639c227447aeefe7e32ae25eb, type: 3}
 --- !u!4 &2079031316
 Transform:
@@ -22383,7 +22361,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2083537981
 GameObject:

@@ -48,7 +48,6 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.CustomProperties.Add("닉네임", PhotonNetwork.LocalPlayer.NickName);
         PhotonNetwork.LocalPlayer.CustomProperties.Add("준비완료", 0);
 
-        PlayerPrefs.SetString("PlayerName", nicknameInput.text);
 
         PhotonNetwork.ConnectUsingSettings(); // 닉네임 입또構 Go!버튼 누르면 설정한 정보로 마스터서버 접속 시도
 
@@ -117,13 +116,16 @@ public class NetworkManager : MonoBehaviourPunCallbacks
             roomNameInput.text = $"ROOM_{Random.Range(1, 100):000}"; // 랜덤으로 이름 부여
         }
         PhotonNetwork.CreateRoom(roomNameInput.text, option);
-        //Invoke(GetCreateRoom(roomNameInput.text, option), 1.5f);
     }
 
     #region 방만들기완료
     public override void OnCreatedRoom() // 방생성완료되면 불림
     {
         Debug.Log("방생성완료");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LocalPlayer.CustomProperties["준비완료"] = 1;
+        }
     }
     #endregion
     // 로비에 접속했을 때 자동을 호출됨
