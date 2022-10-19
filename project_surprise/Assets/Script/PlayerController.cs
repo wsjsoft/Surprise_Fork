@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float runCooltime = 3f;
     public ParticleSystem runFX;
     [SerializeField] ParticleSystem runParticle;
-    bool tmp;
+    bool isRunPaticlePlay = false;
 
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
@@ -68,8 +68,6 @@ public class PlayerController : MonoBehaviourPunCallbacks
             runCooltimePanel = GameObject.Find("RunCoolTime_Panel");
             
         }
-        tmp = false;
-
     }
 
     void FixedUpdate()
@@ -163,17 +161,17 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         //Particle V2 연속
         //continuous
-        /*if (playerInput.run && !tmp)
+        /*if (playerInput.run && !isRunPaticlePlay)
         {
             Debug.Log("Run");
             runParticle.Play();
-            tmp = true;
+            isRunPaticlePlay = true;
         }
-        else if (!playerInput.run && tmp)
+        else if (!playerInput.run && isRunPaticlePlay)
         {
             Debug.Log("not Run");
             runParticle.Stop();
-            tmp = false;
+            isRunPaticlePlay = false;
         }*/
 
         speed = playerInput.run ? speed_run : speed_walk;//걷는지 뛰는지에 따른 speed 값 조절
