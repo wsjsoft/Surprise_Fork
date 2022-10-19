@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float atkCooltime = 3f;
     public GameObject attackFX;
     public Transform attackPos;
+    public BoxCollider meleeArea;
+    AudioSource audioSource;
+    public AudioClip hitSound;
 
     //Run
     GameObject runCooltimePanel;
@@ -47,7 +50,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if(PhotonNetwork.IsConnected)
+        audioSource = GetComponent<AudioSource>();
+
+        if (PhotonNetwork.IsConnected)
             pv.RPC("GetPlayerName", RpcTarget.All);
 
         if(photonView.IsMine)
@@ -126,7 +131,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public void Attack()
     {
         animator.SetTrigger("Attack");
-        Instantiate(attackFX, attackPos.position, attackPos.rotation);
+        StartCoroutine("Swing");
         atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);
         atkCooltimePanel.SetActive(true);
     }
@@ -159,4 +164,32 @@ public class PlayerController : MonoBehaviourPunCallbacks
         else runFX.Stop();
         speed = playerInput.run ? speed_run : speed_walk;
     }
+
+    IEnumerator Die()
+    {
+        animator.SetTrigger("Die");
+
+        yield return new WaitForSeconds(1.2f);
+        PhotonNetwork.Destroy(gameObject);
+    }
+
+    IEnumerator Swing()
+    {
+        yield return new WaitForSeconds(0.1f);
+        meleeArea.enabled = true;
+        audioSource.PlayOneShot(hitSound);
+
+        yield return new WaitForSeconds(0.2f);
+        meleeArea.enabled = false;
+        Instantiate(attackFX, attackPos.position, attackPos.rotation);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Attack"))
+        {
+            StartCoroutine("Die");
+        }
+    }
+
 }
