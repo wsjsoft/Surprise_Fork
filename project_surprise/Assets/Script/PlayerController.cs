@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float atkCooltime = 3f;
     public GameObject attackFX;
     public Transform attackPos;
+    public BoxCollider meleeArea;
+    AudioSource audioSource;
+    public AudioClip hitSound;
 
     //Run
     GameObject runCooltimePanel;
@@ -49,7 +52,9 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
     void Awake()
     {
-        if(PhotonNetwork.IsConnected)
+        audioSource = GetComponent<AudioSource>();
+
+        if (PhotonNetwork.IsConnected)
             pv.RPC("GetPlayerName", RpcTarget.All);
 
         if(photonView.IsMine)
@@ -127,7 +132,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     public void Attack()
     {
         animator.SetTrigger("Attack");
-        Instantiate(attackFX, attackPos.position, attackPos.rotation);
+        StartCoroutine("Swing");
         atkCooltimePanel.GetComponent<CoolTime>().SetCoolTime(atkCooltime);//쿨타임 패널에 공격 쿨타임 정보 넘겨주기
         atkCooltimePanel.SetActive(true);//쿨타임 패널 활성화. -> 쿨타임 동안 버튼을 비활성화 시키고 쿨타임 시간만큼 돌아가는 패널 위의 슬라이더를 생성함.
     }
@@ -174,4 +179,32 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         speed = playerInput.run ? speed_run : speed_walk;//걷는지 뛰는지에 따른 speed 값 조절
     }
+
+    IEnumerator Die()
+    {
+        animator.SetTrigger("Die");
+
+        yield return new WaitForSeconds(1.2f);
+        PhotonNetwork.Destroy(gameObject);
+    }
+
+    IEnumerator Swing()
+    {
+        yield return new WaitForSeconds(0.1f);
+        meleeArea.enabled = true;
+        audioSource.PlayOneShot(hitSound);
+
+        yield return new WaitForSeconds(0.2f);
+        meleeArea.enabled = false;
+        Instantiate(attackFX, attackPos.position, attackPos.rotation);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Attack"))
+        {
+            StartCoroutine("Die");
+        }
+    }
+
 }
