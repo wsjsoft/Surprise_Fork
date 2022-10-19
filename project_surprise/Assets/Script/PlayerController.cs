@@ -42,6 +42,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
     float runCooltime = 3f;
     public ParticleSystem runFX;
     [SerializeField] ParticleSystem runParticle;
+    bool tmp;
 
     public bool isMove { get; private set; }
     public bool isReady { get; private set; }
@@ -67,6 +68,7 @@ public class PlayerController : MonoBehaviourPunCallbacks
             runCooltimePanel = GameObject.Find("RunCoolTime_Panel");
             
         }
+        tmp = false;
 
     }
 
@@ -155,7 +157,25 @@ public class PlayerController : MonoBehaviourPunCallbacks
                 runTime = 0f;
             }
         }
-        if(playerInput.run) { runParticle.Emit(10); }
+
+        //Particle V1 끊김
+        //if(playerInput.run) { runParticle.Emit(30); }
+
+        //Particle V2 연속
+        //continuous
+        /*if (playerInput.run && !tmp)
+        {
+            Debug.Log("Run");
+            runParticle.Play();
+            tmp = true;
+        }
+        else if (!playerInput.run && tmp)
+        {
+            Debug.Log("not Run");
+            runParticle.Stop();
+            tmp = false;
+        }*/
+
         speed = playerInput.run ? speed_run : speed_walk;//걷는지 뛰는지에 따른 speed 값 조절
     }
 }
