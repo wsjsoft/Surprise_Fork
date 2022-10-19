@@ -161,18 +161,16 @@ public class PlayerController : MonoBehaviourPunCallbacks
 
         //Particle V2 연속
         //continuous
-        /*if (playerInput.run && !isRunPaticlePlay)
+        if (playerInput.run && !isRunPaticlePlay)
         {
-            Debug.Log("Run");
             runParticle.Play();
             isRunPaticlePlay = true;
         }
         else if (!playerInput.run && isRunPaticlePlay)
         {
-            Debug.Log("not Run");
             runParticle.Stop();
             isRunPaticlePlay = false;
-        }*/
+        }
 
         speed = playerInput.run ? speed_run : speed_walk;//걷는지 뛰는지에 따른 speed 값 조절
     }
